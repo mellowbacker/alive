@@ -1,0 +1,19 @@
+name: Community idea
+description: Suggest a contribution or community initiative.
+title: "[Idea]: "
+labels: ["community"]
+body:
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Your idea
+      description: What should the community consider?
+    validations:
+      required: true
+  - type: textarea
+    id: impact
+    attributes:
+      label: Expected value and risks
+      description: Explain the benefits, limitations, and risks.
+    validations:
+      required: true

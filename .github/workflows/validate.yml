@@ -1,0 +1,31 @@
+name: Validate repository
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Validate required project files
+        run: |
+          set -e
+          for file in README.md MANIFESTO.md TOKENOMICS.md ROADMAP.md CONTRIBUTING.md SECURITY.md DISCLAIMER.md docs/FAIR-LAUNCH.md docs/TOKEN-FACTS.md docs/TRANSPARENCY.md; do
+            test -s "$file" || { echo "Missing or empty: $file"; exit 1; }
+          done
+      - name: Validate token metadata JSON
+        run: python -m json.tool TOKEN-METADATA.json > /dev/null
+      - name: Check for accidental secret files
+        run: |
+          if find . -type f \\( -name ".env" -o -name "id_rsa" -o -name "*.pem" \\) -not -path "./.git/*" | grep .; then
+            echo "Potential secret file detected."
+            exit 1
+          fi
